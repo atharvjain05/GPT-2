@@ -13,7 +13,7 @@ class MLP(nn.Module):
     def __init__(self, n_embed):
         super().__init__()
         self.c_fc = nn.Linear(n_embed, 4 * n_embed)
-        self.gelu = nn.GELU()
+        self.gelu = nn.GELU(approximate='tanh')
         self.c_proj = nn.Linear(4 * n_embed, n_embed)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -103,7 +103,7 @@ class GPT2(nn.Module):
         transposed = ['attn.c_attn.weight', 'attn.c_proj.weight', 'mlp.c_fc.weight', 'mlp.c_proj.weight']
 
         for k in sd_hf:
-            if k.endswith('attn.bias') or k.endswith('attn.masked_bias'):
+            if k.endswith('.attn.bias') or k.endswith('.attn.masked_bias'):
                 continue
             with torch.no_grad():
                 if any(k.endswith(t) for t in transposed):
