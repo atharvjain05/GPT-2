@@ -81,6 +81,7 @@ class GPT2(nn.Module):
         
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         batch_size, seq_len = x.shape 
+        assert seq_len <= CONTEXT_LEN
         embeddings = self.transformer.wte(x) + self.transformer.wpe(torch.arange(seq_len, device=x.device))
         
         for block in self.transformer.h:
